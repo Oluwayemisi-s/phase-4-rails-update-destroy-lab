@@ -18,6 +18,22 @@ class PlantsController < ApplicationController
     render json: plant, status: :created
   end
 
+  def update
+    plant = Plant.find(params[:id])
+    plant.update!( is_in_stock: params[:is_in_stock] )
+    render json: plant
+  rescue ActiveRecord::RecordInvalid => invalid
+    render json: { errors: invalid.record.errors }, status: :unprocessable_entity
+  end
+
+  def destroy
+    plant = Plant.find(params[:id])
+    plant.destroy
+    head :no_content
+  rescue ActiveRecord::RecordInvalid => invalid
+    render json: { errors: invalid.record.errors }, status: :unprocessable_entity
+  end
+
   private
 
   def plant_params
